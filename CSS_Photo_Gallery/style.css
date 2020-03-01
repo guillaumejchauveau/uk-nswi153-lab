@@ -60,17 +60,22 @@ section.tab {
     font-size: 24pt;
     padding: 10px 40px;
     margin: 0; }
-  section.tab:target {
+  section.tab:target, section.tab:last-of-type {
     z-index: 15; }
-    section.tab:target section {
+    section.tab:target section, section.tab:last-of-type section {
       opacity: 1;
       transform: translateX(0%) rotate3d(0, 1, 0, 0deg);
       transform-origin: center; }
-    section.tab:target + nav {
+    section.tab:target + nav, section.tab:last-of-type + nav {
       display: block; }
-    section.tab:target ~ section.tab section {
-      transform: translateX(100%) rotate3d(0, 1, 0, 60deg);
-      transform-origin: left; }
+    section.tab:target ~ section.tab, section.tab:target ~ section.tab:last-of-type, section.tab:last-of-type ~ section.tab, section.tab:last-of-type ~ section.tab:last-of-type {
+      z-index: 0; }
+      section.tab:target ~ section.tab section, section.tab:target ~ section.tab:last-of-type section, section.tab:last-of-type ~ section.tab section, section.tab:last-of-type ~ section.tab:last-of-type section {
+        transform: translateX(100%) rotate3d(0, 1, 0, 60deg);
+        transform-origin: left;
+        opacity: 0; }
+      section.tab:target ~ section.tab + nav, section.tab:target ~ section.tab:last-of-type + nav, section.tab:last-of-type ~ section.tab + nav, section.tab:last-of-type ~ section.tab:last-of-type + nav {
+        display: none; }
   section.tab section {
     opacity: 0;
     transform: translateX(-100%) rotate3d(0, 1, 0, -60deg);

@@ -87,7 +87,7 @@ section.tab {
     margin: 0;
   }
 
-  &:target {
+  &:target, &:last-of-type {
     z-index: 15;
 
     section {
@@ -100,11 +100,17 @@ section.tab {
       display: block;
     }
 
-    & ~ section.tab {
+    & ~ section.tab, & ~ section.tab:last-of-type {
+      z-index: 0;
 
       section {
         transform: translateX(100%) rotate3d(0, 1, 0, 60deg);
         transform-origin: left;
+        opacity: 0;
+      }
+
+      & + nav {
+        display: none;
       }
     }
   }
