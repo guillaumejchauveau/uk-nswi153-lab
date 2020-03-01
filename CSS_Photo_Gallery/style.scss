@@ -1,0 +1,229 @@
+$headerHeight: 80px;
+$footerHeight: 32px;
+$navWidth: 48px;
+
+$figureWidth: 220px;
+$figureBorder: 10px;
+$figureMargin: 20px;
+$figureWidthFull: $figureWidth + 2*$figureMargin;
+
+$headColor: #444;
+
+html, body {
+  height: 100%;
+}
+
+
+body {
+  font: 12pt Calibri;
+  background: #ccc linear-gradient(90deg, #aaa, #eee 40%, #aaa);
+  margin: 0;
+}
+
+
+/* The main headline of the page */
+header {
+
+  h1 {
+    width: $figureWidthFull * 2;
+    height: $headerHeight - 1px;
+    line-height: $headerHeight - 1px;
+    font-size: 32pt;
+    text-shadow: 0px 0px 10px #cc9;
+    color: $headColor;
+    border-bottom: 1px solid $headColor;
+    padding: 0;
+    margin: 0 auto;
+  }
+}
+
+/* The main contents of the page */
+main {
+  position: absolute;
+  top: $headerHeight;
+  bottom: $footerHeight;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+
+  div {
+    width: $figureWidthFull * 2;
+    height: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Footer of the page */
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+
+  p {
+    width: $figureWidthFull * 2;
+    height: $footerHeight - 1px;
+    line-height: $footerHeight - 1px;
+    font-size: 10pt;
+    text-align: center;
+    color: lighten($headColor, 20%);
+    border-top: 1px solid $headColor;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+  }
+}
+
+/* This section represents one tab -- one category of photos */
+section.tab {
+  position: absolute;
+  padding: 0;
+  perspective: 300vw;
+  height: 100%;
+
+  h2 {
+    color: $headColor;
+    font-size: 24pt;
+    padding: $figureMargin/2 2*$figureMargin;
+    margin: 0;
+  }
+
+  &:target {
+    z-index: 15;
+
+    section {
+      opacity: 1;
+      transform: translateX(0%) rotate3d(0, 1, 0, 0deg);
+      transform-origin: center;
+    }
+
+    & + nav {
+      display: block;
+    }
+
+    & ~ section.tab {
+
+      section {
+        transform: translateX(100%) rotate3d(0, 1, 0, 60deg);
+        transform-origin: left;
+      }
+    }
+  }
+
+  /* Inner section holds the figures */
+  section {
+    opacity: 0;
+    transform: translateX(-100%) rotate3d(0, 1, 0, -60deg);
+    transform-origin: right;
+    transition: all 1s ease;
+    /* Figure is a photograph with its caption */
+    figure {
+      width: $figureWidth - 2*$figureBorder;
+      border: $figureBorder solid white;
+      overflow: hidden;
+      background-color: white;
+      margin: $figureMargin;
+      box-shadow: 2px 2px 7px #777;
+      float: left;
+      animation: wiggle 5s infinite;
+      animation-play-state: paused;
+
+      &:hover {
+        animation-play-state: running;
+      }
+
+      img {
+        width: $figureWidth - 2*$figureBorder;
+        margin: 0;
+      }
+
+      figcaption {
+        width: $figureWidth - 2*$figureBorder;
+        text-align: center;
+        margin: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+
+section.tab + nav {
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: none;
+
+  a {
+    position: absolute;
+    height: 100%;
+    width: $navWidth;
+    line-height: 100vh;
+    text-decoration: none;
+    font-size: 64pt;
+    font-weight: bold;
+    color: $headColor;
+    text-align: center;
+    opacity: 0.3;
+    background-color: rgba(128, 128, 128, 0.0);
+    transition: transform 0.2s ease;
+  }
+
+  a[rel="prev"] {
+    left: 0;
+
+    &:hover {
+      background: linear-gradient(-90deg, rgba(128, 128, 128, 0.0), rgba(128, 128, 128, 0.8));
+      transform: translateX(-5px);
+    }
+  }
+
+  a[rel="next"] {
+    right: 0;
+
+    &:hover {
+      background: linear-gradient(90deg, rgba(128, 128, 128, 0.0), rgba(128, 128, 128, 0.8));
+      transform: translateX(5px);
+    }
+  }
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(-10deg);
+  }
+  20% {
+    transform: rotate(10deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  60% {
+    transform: rotate(10deg);
+  }
+  80% {
+    transform: rotate(-10deg);
+  }
+  90% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@for $i from 2 to 7 {
+  $mediaContentWidth: $i * $figureWidthFull;
+  @media (min-width: $mediaContentWidth + $navWidth*2) {
+    header h1, main div, footer p, section.tab section {
+      width: $mediaContentWidth;
+    }
+  }
+}
