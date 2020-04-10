@@ -156,7 +156,7 @@ class Args
             }
 
             if ($argDefinition === null) {
-                echo "Invalid argument '" . $current . "'\n";
+                echo "Invalid argument '$current'\n";
                 self::printUsage($script_name, $argDefinitions);
                 exit(1);
             }
@@ -169,14 +169,14 @@ class Args
 
             if ($argDefinition['type'] !== 'bool') {
                 if (empty($args) || $args[0][0] === '-') {
-                    echo "Argument '" . $name . "' expects a value\n";
+                    echo "Argument '$name' expects a value\n";
                     self::printUsage($script_name, $argDefinitions);
                     exit(1);
                 }
                 $value = array_shift($args);
                 if ($argDefinition['type'] === 'int') {
                     if (!is_numeric($value)) {
-                        echo "Argument '" . $name . "' expects an integer as value\n";
+                        echo "Argument '$name' expects an integer as value\n";
                         self::printUsage($script_name, $argDefinitions);
                         exit(1);
                     }

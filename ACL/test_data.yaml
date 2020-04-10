@@ -1,0 +1,103 @@
+resources:
+  user1:
+    class: User
+    __construct:
+      - John
+      - Doe
+      - employee
+  user2:
+    class: User
+    __construct:
+      - Franky
+      - Snakeyes
+      - ceo
+  
+  projectA:
+    class: Project
+    __construct:
+      - A
+  projectA1:
+    class: Project
+    __construct:
+      - A1
+      - $projectA
+    call:
+      - method: addManager
+        args:
+          - $user1
+      - method: addTask
+        args:
+          - T1
+      - method: addTask
+        args:
+          - T2
+  projectA1a:
+    class: Project
+    __construct:
+      - A1a
+      - $projectA1
+
+  projectB:
+    class: Project
+    __construct:
+      - B
+  projectB1:
+    class: Project
+    __construct:
+      - B1
+      - $projectB
+    call:
+      - method: addTeamMember
+        args:
+          - $user1
+      - method: addTask
+        args:
+          - T1
+      - method: addTask
+        args:
+          - T2
+  projectB1a:
+    class: Project
+    __construct:
+      - B1a
+      - $projectB1
+    
+tests:
+  - user: $user1
+    resource: $user2
+    action: getRole
+  - user: $user2
+    resource: $user1
+    action: getRole
+  - user: $user1
+    resource:
+      - $projectA
+      - $projectA1
+      - $projectA1a
+    action:
+      - getDescription
+      - setDescription
+  - user: $user1
+    resource:
+      - $projectA1
+      - $projectB1
+    action:
+      - setTaskComplete
+      - addTask
+      - deleteTask
+      - addManager
+      - removeManager
+      - addTeamMember
+      - removeTeamMember
+  - user: $user2
+    resource:
+      - $projectA1
+      - $projectB1
+    action:
+      - setTaskComplete
+      - addTask
+      - deleteTask
+      - addManager
+      - removeManager
+      - addTeamMember
+      - removeTeamMember
