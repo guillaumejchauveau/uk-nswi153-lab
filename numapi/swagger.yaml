@@ -1,0 +1,101 @@
+paths:
+  /unary/negation:
+    get:
+      operationId: unary_negation
+      summary: 'Negates a number'
+      responses:
+        '200':
+          $ref: '#/responses/Result'
+          x-oad-type: reference
+      parameters:
+        -
+          name: input
+          in: query
+          required: true
+          type: number
+          format: double
+          x-oad-type: parameter
+    x-oad-type: operation
+  '/binary/{op}':
+    get:
+      operationId: binary_op
+      summary: 'An operation on two numbers'
+      responses:
+        '200':
+          $ref: '#/responses/Result'
+          x-oad-type: reference
+      parameters:
+        -
+          name: op
+          in: path
+          description: 'Operation name'
+          required: true
+          type: string
+          enum:
+            - add
+            - sub
+          x-oad-type: parameter
+        -
+          name: left
+          in: query
+          description: 'Left operand'
+          required: true
+          type: number
+          format: double
+          x-oad-type: parameter
+        -
+          name: right
+          in: query
+          description: 'Right operand'
+          required: true
+          type: number
+          format: double
+          x-oad-type: parameter
+    x-oad-type: operation
+  /sum:
+    post:
+      operationId: sum
+      summary: 'Sums all numbers'
+      responses:
+        '200':
+          $ref: '#/responses/Result'
+          x-oad-type: reference
+      parameters:
+        - name: inputs
+          in: body
+          required: true
+          schema:
+            x-oad-type: array
+            type: array
+            title: inputs
+            items:
+              x-oad-type: number
+              type: number
+              title: input
+              format: double
+responses:
+  Result:
+    description: 'Result of an operation'
+    schema:
+      x-oad-type: object
+      type: object
+      title: Result
+      properties:
+        result:
+          x-oad-type: number
+          type: number
+          title: Result
+          format: double
+    x-oad-type: response
+info:
+  title: Num
+  version: 1.0.0
+  description: 'Arithmetic API'
+basePath: '/https://webik.ms.mff.cuni.cz/~chauveag/numapi'
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+swagger: '2.0'

@@ -1,0 +1,45 @@
+body {
+	font: 14pt Calibri;
+	margin: 25px;
+}
+
+footer {
+	font-size: 8pt;
+	margin: 25px 0;
+	padding-top: 10px;
+	border-top: 1px solid #ccc;
+	text-align: right;
+	color: #999;
+}
+
+table {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+
+table thead th {
+	background-color: #cce;
+}
+
+table td, table th {
+	padding: 5px 10px;
+	border: 1px solid #dde;
+}
+
+table tbody tr:nth-child(2n) td {
+	background-color: #f3f3fb;
+
+}
+
+table td img {
+	cursor: pointer;
+}
+
+table td[colspan] {
+	text-align: center;
+}
+
+button {
+	font-size: 14pt;
+	margin: 10px 0;
+}
