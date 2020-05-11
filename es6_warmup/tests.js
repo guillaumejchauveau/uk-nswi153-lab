@@ -32,7 +32,8 @@ const deepCompare = (value1, value2) => {
 		//if (typeof(value2) !== 'object')
 		const keys1 = Object.keys(value1).sort();
 		const keys2 = Object.keys(value2).sort();
-		return keys1.reduce((res, key, idx) => res && key === keys2[idx] && deepCompare(value1[key], value2[key]), true);
+		return keys1.length === keys2.length
+			&& keys1.reduce((res, key, idx) => res && key === keys2[idx] && deepCompare(value1[key], value2[key]), true);
 	} else if (typeof(value1) === 'number' && isNaN(value1)) {
 		return isNaN(value2);
 	} else if (typeof(value1) !== 'function') {
