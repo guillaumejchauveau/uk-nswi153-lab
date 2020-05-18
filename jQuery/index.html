@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Nested Lists</title>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <script>
+    var module = {}	// hack to emulate node.js modules in a browser
+  </script>
+  <script type="text/javascript" src="js/jquery-3.5.0.min.js"></script>
+  <script type="text/javascript" src="js/ui-promise.js"></script>
+  <script type="text/javascript" src="js/solution.js"></script>
+
+  <script type="text/javascript">
+    var data = [
+      {
+        caption: 'Urgent',
+        children: [
+          { caption: 'Prepare jQuery lecture' },
+          {
+            caption: 'Prepare jQuery Labs',
+            children: [
+              { caption: 'Implement sample solution' },
+              { caption: 'Preare initial code pack' },
+              { caption: 'Write down instructions and hints' },
+            ],
+          }
+        ]
+      },
+      {
+        caption: 'Shopping list',
+        children: [
+          {
+            caption: 'Milk',
+            children: [
+              { caption: 'fat' },
+              { caption: 'bio' },
+            ]
+          },
+          { caption: 'Bread' },
+          { caption: 'Beer' },
+          {
+            caption: 'Fruits',
+            children: [
+              { caption: 'Banana' },
+              {
+                caption: 'Apples',
+                children: [
+                  { caption: 'Gala' },
+                  { caption: 'Melba' },
+                ]
+              },
+              { caption: 'Orange' },
+            ],
+          },
+        ]
+      },
+      {
+        caption: 'Household chores',
+        children: [
+          { caption: 'Vacuum' },
+          {
+            caption: 'Water plants',
+            children: [
+              { caption: 'Indoors' },
+              { caption: 'Outdoors' },
+            ]
+          },
+          { caption: 'Fix front doors' },
+        ],
+      }
+    ]
+
+    $(function () {
+      // Use the builder function on the prepared data object.
+      ListItem.init(confirmDialog, promptDialog)
+      ListItem.buildNestedList('#list', data)
+    })
+  </script>
+</head>
+
+<body>
+<h1>Nested Lists (jQuery Exercise)</h1>
+<div id="list"></div>
+
+<footer>
+  This page is for educational purposes only.
+  <a href="https://icons8.com/web-app/15823/Circled-Chevron-Right">Icons by Icons8</a>
+</footer>
+</body>
+</html>

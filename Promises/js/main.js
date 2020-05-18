@@ -5,7 +5,7 @@ $(function(){
 	/*
 	 * HTTP Requests API
 	 */
-	
+
 	/**
 	 * Returns a promise representing async fetch operation.
 	 * The promise will yield parsed JSON structure from the load.
@@ -79,7 +79,8 @@ $(function(){
 				);
 			}
 			catch (e) {
-				alert(e);
+				//alert(e);
+				throw e
 			}
 		}
 	});

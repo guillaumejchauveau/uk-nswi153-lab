@@ -24,7 +24,9 @@ function generateTemporaryName (oldNames, newNames, name) {
  * @return {Promise} which must resolve once all renames have concluded or reject if any subsequent
  */
 function handleRenames (renames, oldNames, renameFile) {
+  const remainingRenames = new Map(renames)
   const newNames = new Set(oldNames)
+  // Map has only forEach() for the entries, would make the code harder to read.
   for (const oldName of renames.keys()) {
     newNames.delete(oldName)
   }
@@ -66,11 +68,11 @@ function handleRenames (renames, oldNames, renameFile) {
    */
   let temporaryNameNumber = 0
 
-  while (renames.size > 0 || currentRename !== null) {
+  while (remainingRenames.size > 0 || currentRename !== null) {
     // Start new rename group processing.
     if (currentRename === null) {
-      currentRename = renames.entries().next().value
-      renames.delete(currentRename[0])
+      currentRename = remainingRenames.entries().next().value
+      remainingRenames.delete(currentRename[0])
       currentGroup = {
         names: new Set(),
         steps: []
@@ -101,14 +103,15 @@ function handleRenames (renames, oldNames, renameFile) {
       currentGroup.names.add(newName)
     }
 
-    currentRename = renames.has(newName) ? [newName, renames.get(newName)] : null
-    renames.delete(newName)
+    currentRename = remainingRenames.has(newName) ? [newName, remainingRenames.get(newName)] : null
+    remainingRenames.delete(newName)
 
     if (currentRename === null && groupStartName !== null) {
-      for (const rename of renames) {
+      // Again, only forEach is available and a break is needed.
+      for (const rename of remainingRenames) {
         if (rename[1] === groupStartName) {
           currentRename = rename
-          renames.delete(rename[0])
+          remainingRenames.delete(rename[0])
           break
         }
       }
@@ -121,12 +124,11 @@ function handleRenames (renames, oldNames, renameFile) {
   }
 
   const promises = []
+  // Iterator does not have any other way of iteration.
   for (const group of groups.values()) {
-    let groupPromise = Promise.resolve()
-    for (const [oldName, newName] of group) {
-      groupPromise = groupPromise.then(() => renameFile(oldName, newName))
-    }
-    promises.push(groupPromise)
+    promises.push(group.reduce((groupPromise, rename) => {
+      return groupPromise.then(() => renameFile(...rename))
+    }, Promise.resolve()))
   }
   return Promise.all(promises)
 }
