@@ -1,3 +1,17 @@
+/* "regeneratorRuntime is not defined", seems related to Babel.
+
+function * generateTemporaryName (oldNames, newNames) {
+  let counter = 0
+  while (true) {
+    const name = counter.toString()
+    counter++
+    if (oldNames.has(name) || newNames.has(name)) {
+      continue
+    }
+    yield name
+  }
+}
+*/
 /**
  * Chooses a number for a temporary name.
  * @param {Set<string>} oldNames
@@ -6,9 +20,10 @@
  * @return {number} The new name
  */
 function generateTemporaryName (oldNames, newNames, name) {
-  name++
-  for (; oldNames.has(name.toString()) || newNames.has(name.toString()); name++) {
-  }
+  do {
+    name++
+  } while (oldNames.has(name.toString()) || newNames.has(name.toString()))
+
   return name
 }
 
@@ -26,13 +41,9 @@ function generateTemporaryName (oldNames, newNames, name) {
 function handleRenames (renames, oldNames, renameFile) {
   const remainingRenames = new Map(renames)
   const newNames = new Set(oldNames)
-  // Map has only forEach() for the entries, would make the code harder to read.
-  for (const oldName of renames.keys()) {
-    newNames.delete(oldName)
-  }
-  for (const newName of renames.values()) {
-    newNames.add(newName)
-  }
+  Array.from(renames.keys()).forEach(oldName => newNames.delete(oldName))
+  Array.from(renames.values()).forEach(newName => newNames.add(newName))
+
   if (oldNames.size !== newNames.size) {
     throw new Error('Cannot rename multiple files to the same name')
   }
@@ -107,13 +118,10 @@ function handleRenames (renames, oldNames, renameFile) {
     remainingRenames.delete(newName)
 
     if (currentRename === null && groupStartName !== null) {
-      // Again, only forEach is available and a break is needed.
-      for (const rename of remainingRenames) {
-        if (rename[1] === groupStartName) {
-          currentRename = rename
-          remainingRenames.delete(rename[0])
-          break
-        }
+      const traceBack = Array.from(remainingRenames).find(rename => rename[1] === groupStartName)
+      if (traceBack !== undefined) {
+        currentRename = traceBack
+        remainingRenames.delete(traceBack[0])
       }
       groupStartName = null
     }
@@ -123,13 +131,11 @@ function handleRenames (renames, oldNames, renameFile) {
     }
   }
 
-  const promises = []
-  // Iterator does not have any other way of iteration.
-  for (const group of groups.values()) {
-    promises.push(group.reduce((groupPromise, rename) => {
-      return groupPromise.then(() => renameFile(...rename))
-    }, Promise.resolve()))
-  }
+  const promises = Array.from(groups.values())
+    .map(group => group.reduce((groupPromise, rename) => {
+        return groupPromise.then(() => renameFile(...rename))
+      }, Promise.resolve())
+    )
   return Promise.all(promises)
 }
 
