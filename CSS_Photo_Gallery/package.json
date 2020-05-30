@@ -1,0 +1,11 @@
+{
+  "name": "uk-nswi153-lab-css-photo-gallery",
+  "version": "1.0.0",
+  "dependencies": {
+    "node-sass": "^4.14.1"
+  },
+  "scripts": {
+    "build": "node-sass -o . style.scss",
+    "dev": "node-sass -o . -w style.scss"
+  }
+}
