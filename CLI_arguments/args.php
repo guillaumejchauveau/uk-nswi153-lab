@@ -78,22 +78,15 @@ class Args
 
 
     /**
-     * Load the arguments from an array (e.g., the $argv may be passed down right away).
-     * First value of the args array is expected to be path to this script.
-     * @param array $args
-     * @return array Remaining unprocessed arguments from the $args array.
+     * @return array
      * @throws ReflectionException
      * @throws Exception
      */
-    public static function load(array $args)
-    {
-        $script_name = array_shift($args); // remove the path
-
+    protected static function createArgDefinitions() {
         $argDefinitions = [];
         $known_shorts = [];
 
         $reflection = new ReflectionClass(self::class);
-        $remainingRequiredArgs = [];
         foreach ($reflection->getStaticProperties() as $property => $value) {
             $propertyReflection = new ReflectionProperty(self::class, $property);
             $doc = $propertyReflection->getDocComment();
@@ -107,9 +100,6 @@ class Args
                 'short' => $short[1] ?? null
             ];
             $argDefinitions[] = $argDefinition;
-            if ($required) {
-                $remainingRequiredArgs[$property] = $argDefinition;
-            }
             if ($argDefinition['short']) {
                 $short = $argDefinition['short'];
                 if (in_array($short, $known_shorts)) {
@@ -118,7 +108,29 @@ class Args
                 $known_shorts[] = $short;
             }
         }
-        unset($argDefinition);
+        return $argDefinitions;
+    }
+
+    /**
+     * Load the arguments from an array (e.g., the $argv may be passed down right away).
+     * First value of the args array is expected to be path to this script.
+     * @param array $args
+     * @return array Remaining unprocessed arguments from the $args array.
+     * @throws ReflectionException
+     * @throws Exception
+     */
+    public static function load(array $args)
+    {
+        $argDefinitions = static::createArgDefinitions();
+        $remainingRequiredArgs = [];
+        foreach ($argDefinitions as $def) {
+            if ($def['required']) {
+                $remainingRequiredArgs[$def['name']] = $def;
+            }
+        }
+
+        $script_name = array_shift($args); // remove the path
+
         if (empty($argDefinitions)) {
             return $args;
         }
